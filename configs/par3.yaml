@@ -1,0 +1,37 @@
+# PAR3 — translation leak. The confidential DB is the machine translation of each work,
+# the leak is a human translation of the same work (translator_1).
+#
+#   python -m doma.cli run configs/par3.yaml
+
+dataset: par3
+original_set: par3_gt_split
+variant_sets:
+  - par3_human_t1_split
+
+include_original_as_positive: false
+split_seed: 42
+split_ratio: 0.5
+
+prepared_dir: data/prepared
+splits_dir: data/splits
+artifacts_dir: artifacts
+
+runs:
+  - method: doma
+    params:
+      model: Qwen/Qwen3-Embedding-0.6B
+      dtype: bfloat16
+      batch_size: 2
+  - method: doma
+    params:
+      model: ibm-granite/granite-embedding-97m-multilingual-r2
+      dtype: bfloat16
+      batch_size: 4
+  - method: doma
+    params:
+      model: BAAI/bge-base-en-v1.5
+      dtype: bfloat16
+      batch_size: 32
+
+  - method: bm25
+  - method: ssdeep

@@ -1,0 +1,37 @@
+# CASIMIR — revision leak. v1 of a paper is confidential, its latest revision is the leak.
+# The set is used as downloaded; configs/casimir_dedup.yaml is the optional deduplicated variant.
+#
+#   python -m doma.cli run configs/casimir_raw.yaml
+
+dataset: casimir_raw
+original_set: casimir_raw_v1_only
+variant_sets:
+  - casimir_raw_latest_only
+
+include_original_as_positive: false
+split_seed: 42
+split_ratio: 0.5
+
+prepared_dir: data/prepared
+splits_dir: data/splits
+artifacts_dir: artifacts
+
+runs:
+  - method: doma
+    params:
+      model: Qwen/Qwen3-Embedding-0.6B
+      dtype: bfloat16
+      batch_size: 2
+  - method: doma
+    params:
+      model: ibm-granite/granite-embedding-97m-multilingual-r2
+      dtype: bfloat16
+      batch_size: 4
+  - method: doma
+    params:
+      model: BAAI/bge-base-en-v1.5
+      dtype: bfloat16
+      batch_size: 32
+
+  - method: bm25
+  - method: ssdeep
