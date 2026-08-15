@@ -1,0 +1,40 @@
+# Krapivin — paraphrase leak (DIPPER lex60 / order60 rewrites of the confidential papers).
+#
+#   python -m doma.cli run configs/krapivin.yaml
+
+dataset: krapivin
+original_set: krapivin_original
+variant_sets:
+  - krapivin_original_dipper_lex60_order60_s42
+
+# Positives are variants only; the confidential originals stay in the reference DB.
+include_original_as_positive: false
+split_seed: 42
+split_ratio: 0.5
+
+prepared_dir: data/prepared
+splits_dir: data/splits
+artifacts_dir: artifacts
+
+runs:
+  # DoMA — one mean-pooled vector per document. max_seq_length is left unset, so each model's
+  # own maximum token window is used as the pooling window.
+  - method: doma
+    params:
+      model: Qwen/Qwen3-Embedding-0.6B
+      dtype: bfloat16
+      batch_size: 2
+  - method: doma
+    params:
+      model: ibm-granite/granite-embedding-97m-multilingual-r2
+      dtype: bfloat16
+      batch_size: 4
+  - method: doma
+    params:
+      model: BAAI/bge-base-en-v1.5
+      dtype: bfloat16
+      batch_size: 32
+
+  # Baselines.
+  - method: bm25
+  - method: ssdeep

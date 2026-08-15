@@ -1,0 +1,21 @@
+# datasets and run outputs are rebuilt locally, never committed
+data/
+artifacts/
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# environment
+.env
+
+# local agent / editor tooling state
+.omx/
+.omc/
+.claude/
+.vscode/
+.idea/
